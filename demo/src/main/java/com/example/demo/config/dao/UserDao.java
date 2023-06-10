@@ -24,7 +24,6 @@ public class UserDao {
                     "passwords",
                     Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")))
     );
-    private String email;
 
     public UserDetails findUserByEmail(String email){
 

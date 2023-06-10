@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,7 +27,7 @@ public class JwtAthFilter extends OncePerRequestFilter {
     private final UserDao userDao;
     private final JwtUtils jwtUtils;
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response,@NonNull FilterChain filterChain) throws ServletException, IOException {
         final String authHeader=request.getHeader(AUTHORIZATION);
         final String userEmail;
         final String jwtToken;
@@ -38,7 +39,6 @@ public class JwtAthFilter extends OncePerRequestFilter {
         userEmail=jwtUtils.extractUsername(jwtToken); //TODD to be implemented
         if(userEmail !=null && SecurityContextHolder.getContext().getAuthentication()==null){
             UserDetails userDetails=userDao.findUserByEmail(userEmail);
-            final boolean isTokenValid;
             if(jwtUtils.isTokenValid(jwtToken,userDetails)){
                 UsernamePasswordAuthenticationToken authtoken=
                         new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
